@@ -40,6 +40,8 @@
 #include "asio_common.h"
 #include "util.h"
 
+#include <iostream>
+
 namespace nghttp2 {
 namespace asio_http2 {
 namespace server {
@@ -175,7 +177,8 @@ void server::start_accept(tcp::acceptor &acceptor, serve_mux &mux) {
       new_connection->socket(), [this, &acceptor, &mux, new_connection](
                                     const boost::system::error_code &e) {
         if (!e) {
-#if 1
+          std::cout << "New connection from " << new_connection->socket().remote_endpoint().address().to_string() << '\n';
+#if 0
           boost::system::error_code ec;
           new_connection->socket().set_option(tcp::no_delay(true), ec);
           if (!ec)
