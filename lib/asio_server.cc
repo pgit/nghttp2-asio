@@ -176,7 +176,14 @@ void server::start_accept(tcp::acceptor &acceptor, serve_mux &mux) {
       new_connection->socket(), [this, &acceptor, &mux, new_connection](
                                     const boost::system::error_code &e) {
         if (!e) {
+#if 1
+          boost::system::error_code ec;
+          new_connection->socket().set_option(tcp::no_delay(true), ec);
+          if (!ec)
+            return;
+#else
           new_connection->socket().set_option(tcp::no_delay(true));
+#endif
           new_connection->start_read_deadline();
           new_connection->start();
         }
@@ -200,13 +207,22 @@ server::io_services() const {
   return io_service_pool_.io_services();
 }
 
-const std::vector<int> server::ports() const {
+std::vector<int> server::ports() const {
   auto ports = std::vector<int>(acceptors_.size());
   auto index = 0;
   for (const auto &acceptor : acceptors_) {
     ports[index++] = acceptor.local_endpoint().port();
   }
   return ports;
+}
+
+std::vector<boost::asio::ip::tcp::endpoint> server::endpoints() const {
+  std::vector<boost::asio::ip::tcp::endpoint> endpoints;
+  endpoints.reserve(acceptors_.size());
+  for (const auto &acceptor : acceptors_) {
+    endpoints.emplace_back(acceptor.local_endpoint());
+  }
+  return endpoints;
 }
 
 } // namespace server

@@ -1,0 +1,4 @@
+{
+    "testMate.cpp.debug.configTemplate": null,
+    "cmake.configureArgs": [ "-DUSE_SANITIZER=Thread" ]
+}

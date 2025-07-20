@@ -53,3 +53,6 @@ Testing/
 lib/MSVC_obj/
 _VC_ROOT/
 .depend.MSVC
+
+.cache
+build

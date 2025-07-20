@@ -23,7 +23,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 cmake_minimum_required(VERSION 3.0)
-# XXX using 1.8.90 instead of 1.9.0-DEV
 project(nghttp2-asio VERSION 0.0.90)
 
 # See versioning rule:
@@ -134,7 +133,7 @@ else()
   set(OPENSSL_LIBRARIES     "")
 endif()
 
-find_package(Boost 1.54.0 REQUIRED system thread)
+find_package(Boost 1.78.0 REQUIRED system thread)
 
 # Checks for header files.
 include(CheckIncludeFile)
@@ -326,8 +325,44 @@ set(PKGLIBDIR "${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_PROJECT_NAME}")
 
 install(FILES README.rst DESTINATION "${CMAKE_INSTALL_DOCDIR}")
 
+
+
+
+
+
+# create build/compile_commands.json
+set(CMAKE_EXPORT_COMPILE_COMMANDS On)
+
+#
+# http://www.stablecoder.ca/2018/10/30/full-cmake-helper-suite.html
+#
+if (USE_SANITIZER STREQUAL "Address")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=address")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+elseif (USE_SANITIZER STREQUAL "Thread")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=thread")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=thread")
+elseif (USE_SANITIZER STREQUAL "Undefined")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+elseif (USE_SANITIZER STREQUAL "Leak")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=leak")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=leak")
+elseif (USE_SANITIZER STREQUAL "Memory")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=memory")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=memory")
+endif()
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_EXTENSIONS OFF)
+
+
+
+
 add_subdirectory(lib)
 #add_subdirectory(lib/includes)
+add_subdirectory(tests)
 add_subdirectory(third-party)
 #add_subdirectory(src/includes)
 #add_subdirectory(tests/testdata)
@@ -344,7 +379,8 @@ message(STATUS "summary of build options:
       C compiler:     ${CMAKE_C_COMPILER}
       CFLAGS:         ${CMAKE_C_FLAGS_${_build_type}} ${CMAKE_C_FLAGS}
       C++ compiler:   ${CMAKE_CXX_COMPILER}
-      CXXFLAGS:       ${CMAKE_CXX_FLAGS_${_build_type}} ${CMAKE_CXX_FLAGS}
+      C++ Standard:   ${CMAKE_CXX_STANDARD}
+      C++ compiler:   ${CMAKE_CXX_COMPILER}
       WARNCFLAGS:     ${WARNCFLAGS}
       CXX1XCXXFLAGS:  ${CXX1XCXXFLAGS}
     Libs:

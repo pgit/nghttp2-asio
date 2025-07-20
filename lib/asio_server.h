@@ -80,7 +80,10 @@ public:
   io_services() const;
 
   /// Returns a vector with all the acceptors ports in use.
-  const std::vector<int> ports() const;
+  std::vector<int> ports() const;
+
+  /// Returns a vector with all the acceptors ports in use.
+  std::vector<boost::asio::ip::tcp::endpoint> endpoints() const;
 
 private:
   /// Initiate an asynchronous accept operation.

@@ -1,0 +1,53 @@
+{
+	"name": "C++",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": { }
+	},
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	"customizations": {
+		"vscode": {
+			// Set *default* container specific settings.json values on container create.
+			"settings": {
+				"clangd.arguments": [
+					"--clang-tidy",
+					"--pch-storage=disk",
+					"--background-index",
+					"--compile-commands-dir=build"
+				],
+				"C_Cpp.intelliSenseEngine": "disabled",
+				"lldb.showDisassembly": "never",
+				"[cpp]": {
+					"editor.defaultFormatter": "xaver.clang-format"
+			  }		 
+			},
+
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"ms-vscode.cpptools-extension-pack",
+				"llvm-vs-code-extensions.vscode-clangd",				
+				"xaver.clang-format",
+				"vadimcn.vscode-lldb",
+				"usernamehw.errorlens",
+				"matepek.vscode-catch2-test-adapter"
+			]			
+		}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "gcc -v",
+
+	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
+	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+
+	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}
