@@ -112,8 +112,8 @@ public:
   // Returns status code.
   unsigned int status_code() const;
 
-  // Returns boost::asio::io_service this response is running on.
-  boost::asio::io_service &io_service() const;
+  // Returns boost::asio::io_context this response is running on.
+  boost::asio::io_context &io_service() const;
 
   // Application must not call this directly.
   response_impl &impl() const;
@@ -211,7 +211,7 @@ public:
   void join();
 
   // Get access to the io_service objects.
-  const std::vector<std::shared_ptr<boost::asio::io_service>> &
+  const std::vector<std::shared_ptr<boost::asio::io_context>> &
   io_services() const;
 
   // Returns a vector with the ports in use

@@ -85,7 +85,7 @@ void http2::stop() { impl_->stop(); }
 
 void http2::join() { return impl_->join(); }
 
-const std::vector<std::shared_ptr<boost::asio::io_service>> &
+const std::vector<std::shared_ptr<boost::asio::io_context>> &
 http2::io_services() const {
   return impl_->io_services();
 }

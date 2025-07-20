@@ -47,9 +47,9 @@ io_service_pool::io_service_pool(std::size_t pool_size) : next_io_service_(0) {
   // Give all the io_services work to do so that their run() functions will not
   // exit until they are explicitly stopped.
   for (std::size_t i = 0; i < pool_size; ++i) {
-    auto io_service = std::make_shared<boost::asio::io_service>();
-    auto work = std::make_shared<boost::asio::io_service::work>(*io_service);
-    io_services_.push_back(io_service);
+    auto io_context = std::make_shared<boost::asio::io_context>();
+    auto work = boost::asio::make_work_guard(*io_context);
+    io_services_.push_back(io_context);
     work_.push_back(work);
   }
 }
@@ -58,8 +58,8 @@ void io_service_pool::run(bool asynchronous) {
   // Create a pool of threads to run all of the io_services.
   for (std::size_t i = 0; i < io_services_.size(); ++i) {
     futures_.push_back(std::async(std::launch::async,
-                                  (size_t(boost::asio::io_service::*)(void)) &
-                                      boost::asio::io_service::run,
+                                  (size_t(boost::asio::io_context::*)(void)) &
+                                      boost::asio::io_context::run,
                                   io_services_[i]));
   }
 
@@ -87,8 +87,8 @@ void io_service_pool::stop() {
   work_.clear();
 }
 
-boost::asio::io_service &io_service_pool::get_io_service() {
-  // Use a round-robin scheme to choose the next io_service to use.
+boost::asio::io_context& io_service_pool::get_io_service() {
+  // Use a round-robin scheme to choose the next any_io_executor to use.
   auto &io_service = *io_services_[next_io_service_];
   ++next_io_service_;
   if (next_io_service_ == io_services_.size()) {
@@ -97,7 +97,7 @@ boost::asio::io_service &io_service_pool::get_io_service() {
   return io_service;
 }
 
-const std::vector<std::shared_ptr<boost::asio::io_service>> &
+const std::vector<std::shared_ptr<boost::asio::io_context>> &
 io_service_pool::io_services() const {
   return io_services_;
 }

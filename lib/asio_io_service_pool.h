@@ -71,18 +71,20 @@ public:
   void join();
 
   /// Get an io_service to use.
-  boost::asio::io_service &get_io_service();
+  boost::asio::io_context &get_io_service();
 
   /// Get access to all io_service objects.
-  const std::vector<std::shared_ptr<boost::asio::io_service>> &
+  const std::vector<std::shared_ptr<boost::asio::io_context>> &
   io_services() const;
 
 private:
   /// The pool of io_services.
-  std::vector<std::shared_ptr<boost::asio::io_service>> io_services_;
+  std::vector<std::shared_ptr<boost::asio::io_context>> io_services_;
 
   /// The work that keeps the io_services running.
-  std::vector<std::shared_ptr<boost::asio::io_service::work>> work_;
+  // std::vector<std::shared_ptr<boost::asio::io_context::work>> work_;
+  using WorkGuard = boost::asio::executor_work_guard<boost::asio::io_context::executor_type>;
+  std::vector<WorkGuard> work_;
 
   /// The next io_service to use for a connection.
   std::size_t next_io_service_;

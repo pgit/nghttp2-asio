@@ -48,10 +48,10 @@ Here is sample code to use the client API:
 
     int main(int argc, char *argv[]) {
       boost::system::error_code ec;
-      boost::asio::io_service io_service;
+      boost::asio::io_context io_service;
 
       // connect to localhost:3000
-      session sess(io_service, "localhost", "3000");
+      session sess(context, "localhost", "3000");
 
       sess.on_connect([&sess](tcp::resolver::iterator endpoint_it) {
         boost::system::error_code ec;
@@ -82,5 +82,5 @@ Here is sample code to use the client API:
         std::cerr << "error: " << ec.message() << std::endl;
       });
 
-      io_service.run();
+      context.run();
     }

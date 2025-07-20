@@ -236,7 +236,7 @@ response header fields and response body to the console screen:
 
     int main(int argc, char *argv[]) {
       boost::system::error_code ec;
-      boost::asio::io_service io_service;
+      boost::asio::io_context io_service;
 
       // connect to localhost:3000
       session sess(io_service, "localhost", "3000");
@@ -274,7 +274,7 @@ response header fields and response body to the console screen:
     }
 
 ``nghttp2::asio_http2::client::session`` object takes
-``boost::asio::io_service`` object and remote server address.  When
+``boost::asio::io_context`` object and remote server address.  When
 connection is made, the callback function passed to
 ``nghttp2::asio_http2::client::on_connect`` is invoked with connected
 address as its parameter.  After this callback call, use
@@ -306,7 +306,7 @@ Receive server push and enable SSL/TLS
 
     int main(int argc, char *argv[]) {
       boost::system::error_code ec;
-      boost::asio::io_service io_service;
+      boost::asio::io_context io_service;
 
       boost::asio::ssl::context tls(boost::asio::ssl::context::sslv23);
       tls.set_default_verify_paths();
@@ -384,7 +384,7 @@ Multiple concurrent requests
 
     int main(int argc, char *argv[]) {
       boost::system::error_code ec;
-      boost::asio::io_service io_service;
+      boost::asio::io_context io_service;
 
       // connect to localhost:3000
       session sess(io_service, "localhost", "3000");

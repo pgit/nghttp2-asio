@@ -74,11 +74,11 @@ TEST(Server, Hello)
   std::cout << "listening on port: " << port << std::endl;
 
   // connect to localhost:3000
-  boost::asio::io_service& io_service = *server.io_services()[0];
+  boost::asio::io_context& io_service = *server.io_services()[0];
   client::session sess(io_service, "127.0.0.1", std::to_string(port));
 
   std::promise<void> promise;
-  sess.on_connect([&](tcp::resolver::iterator endpoint_it) {
+  sess.on_connect([&](tcp::endpoint endpoint) {
     boost::system::error_code ec;
 
     auto req = sess.submit(ec, "GET", fmt::format("http://127.0.0.1:{}/", port));

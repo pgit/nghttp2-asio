@@ -39,7 +39,7 @@ namespace asio_http2 {
 namespace client {
 
 session_impl::session_impl(
-    boost::asio::io_service &io_service,
+    boost::asio::io_context &io_service,
     const boost::posix_time::time_duration &connect_timeout)
     : wblen_(0),
       io_service_(io_service),
@@ -72,15 +72,15 @@ void session_impl::start_resolve(const std::string &host,
 
   auto self = shared_from_this();
 
-  resolver_.async_resolve({host, service},
+  resolver_.async_resolve(host, service,
                           [self](const boost::system::error_code &ec,
-                                 tcp::resolver::iterator endpoint_it) {
+                                 tcp::resolver::results_type endpoints) {
                             if (ec) {
                               self->not_connected(ec);
                               return;
                             }
 
-                            self->start_connect(endpoint_it);
+                            self->start_connect(endpoints);
                           });
 
   deadline_.async_wait(std::bind(&session_impl::handle_deadline, self));
@@ -124,7 +124,7 @@ void session_impl::handle_ping(const boost::system::error_code &ec) {
   start_ping();
 }
 
-void session_impl::connected(tcp::resolver::iterator endpoint_it) {
+void session_impl::connected(tcp::endpoint endpoint) {
   if (!setup_session()) {
     return;
   }
@@ -138,7 +138,7 @@ void session_impl::connected(tcp::resolver::iterator endpoint_it) {
 
   auto &connect_cb = on_connect();
   if (connect_cb) {
-    connect_cb(endpoint_it);
+    connect_cb(endpoint);
   }
 }
 
@@ -585,7 +585,7 @@ void session_impl::shutdown() {
   signal_write();
 }
 
-boost::asio::io_service &session_impl::io_service() { return io_service_; }
+boost::asio::io_context &session_impl::io_service() { return io_service_; }
 
 void session_impl::signal_write() {
   if (!inside_callback_) {

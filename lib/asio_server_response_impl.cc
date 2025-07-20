@@ -129,7 +129,7 @@ void response_impl::resume() {
   handler->resume(*strm_);
 }
 
-boost::asio::io_service &response_impl::io_service() {
+boost::asio::io_context &response_impl::io_service() {
   return strm_->handler()->io_service();
 }
 

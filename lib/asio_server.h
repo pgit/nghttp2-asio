@@ -76,7 +76,7 @@ public:
   void stop();
 
   /// Get access to all io_service objects.
-  const std::vector<std::shared_ptr<boost::asio::io_service>> &
+  const std::vector<std::shared_ptr<boost::asio::io_context>> &
   io_services() const;
 
   /// Returns a vector with all the acceptors ports in use.

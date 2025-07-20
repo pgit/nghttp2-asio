@@ -29,13 +29,13 @@ namespace asio_http2 {
 namespace client {
 
 session_tcp_impl::session_tcp_impl(
-    boost::asio::io_service &io_service, const std::string &host,
+    boost::asio::io_context &io_service, const std::string &host,
     const std::string &service,
     const boost::posix_time::time_duration &connect_timeout)
     : session_impl(io_service, connect_timeout), socket_(io_service) {}
 
 session_tcp_impl::session_tcp_impl(
-    boost::asio::io_service &io_service,
+    boost::asio::io_context &io_service,
     const boost::asio::ip::tcp::endpoint &local_endpoint,
     const std::string &host, const std::string &service,
     const boost::posix_time::time_duration &connect_timeout)
@@ -48,10 +48,10 @@ session_tcp_impl::session_tcp_impl(
 
 session_tcp_impl::~session_tcp_impl() {}
 
-void session_tcp_impl::start_connect(tcp::resolver::iterator endpoint_it) {
+void session_tcp_impl::start_connect(tcp::resolver::results_type endpoints) {
   auto self = shared_from_this();
-  socket_.async_connect(
-      *endpoint_it, [self, endpoint_it](const boost::system::error_code &ec) {
+  auto ep = endpoints.begin()->endpoint();
+  socket_.async_connect(ep, [self, ep](const boost::system::error_code &ec) {
         if (self->stopped()) {
           return;
         }
@@ -61,7 +61,7 @@ void session_tcp_impl::start_connect(tcp::resolver::iterator endpoint_it) {
           return;
         }
 
-        self->connected(endpoint_it);
+        self->connected(ep);
       });
 }
 

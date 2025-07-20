@@ -37,14 +37,14 @@ namespace client {
 
 using boost::asio::ip::tcp;
 
-session::session(boost::asio::io_service &io_service, const std::string &host,
+session::session(boost::asio::io_context &io_service, const std::string &host,
                  const std::string &service)
     : impl_(std::make_shared<session_tcp_impl>(
           io_service, host, service, boost::posix_time::seconds(60))) {
   impl_->start_resolve(host, service);
 }
 
-session::session(boost::asio::io_service &io_service,
+session::session(boost::asio::io_context &io_service,
                  const boost::asio::ip::tcp::endpoint &local_endpoint,
                  const std::string &host, const std::string &service)
     : impl_(std::make_shared<session_tcp_impl>(
@@ -53,7 +53,7 @@ session::session(boost::asio::io_service &io_service,
   impl_->start_resolve(host, service);
 }
 
-session::session(boost::asio::io_service &io_service, const std::string &host,
+session::session(boost::asio::io_context &io_service, const std::string &host,
                  const std::string &service,
                  const boost::posix_time::time_duration &connect_timeout)
     : impl_(std::make_shared<session_tcp_impl>(io_service, host, service,
@@ -61,7 +61,7 @@ session::session(boost::asio::io_service &io_service, const std::string &host,
   impl_->start_resolve(host, service);
 }
 
-session::session(boost::asio::io_service &io_service,
+session::session(boost::asio::io_context &io_service,
                  const boost::asio::ip::tcp::endpoint &local_endpoint,
                  const std::string &host, const std::string &service,
                  const boost::posix_time::time_duration &connect_timeout)
@@ -70,7 +70,7 @@ session::session(boost::asio::io_service &io_service,
   impl_->start_resolve(host, service);
 }
 
-session::session(boost::asio::io_service &io_service,
+session::session(boost::asio::io_context &io_service,
                  boost::asio::ssl::context &tls_ctx, const std::string &host,
                  const std::string &service)
     : impl_(std::make_shared<session_tls_impl>(
@@ -78,7 +78,7 @@ session::session(boost::asio::io_service &io_service,
   impl_->start_resolve(host, service);
 }
 
-session::session(boost::asio::io_service &io_service,
+session::session(boost::asio::io_context &io_service,
                  boost::asio::ssl::context &tls_ctx, const std::string &host,
                  const std::string &service,
                  const boost::posix_time::time_duration &connect_timeout)
@@ -108,7 +108,7 @@ void session::on_error(error_cb cb) const { impl_->on_error(std::move(cb)); }
 
 void session::shutdown() const { impl_->shutdown(); }
 
-boost::asio::io_service &session::io_service() const {
+boost::asio::io_context &session::io_service() const {
   return impl_->io_service();
 }
 
