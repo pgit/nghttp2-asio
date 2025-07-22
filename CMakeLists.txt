@@ -23,7 +23,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 cmake_minimum_required(VERSION 3.30)
-project(nghttp2-asio VERSION 0.0.90)
+project(nghttp2-asio VERSION 0.1.0)
 
 # See versioning rule:
 #  https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
@@ -53,7 +53,7 @@ include(GNUInstallDirs)
 
 # Auto-detection of features that can be toggled
 find_package(OpenSSL 1.0.1)
-find_package(Libnghttp2 1.43.0)
+find_package(Libnghttp2 1.51.0)
 
 include(CMakeOptions.txt)
 
